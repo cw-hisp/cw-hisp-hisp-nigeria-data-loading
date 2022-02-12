@@ -76,39 +76,154 @@ COPY temp_data
 
 -- Finding the OU Numeric ID
 select *
-from organisationunit where uid = 'uid';
+from organisationunit
+where uid = 'uid';
 
 --- Loading data trackedentityinstance Table
-INSERT INTO trackedentityinstance (trackedentityinstanceid,uid,created,
-								   lastupdated, deleted,organisationunitid,
-trackedentitytypeid,lastupdatedby,createdatclient,lastupdatedatclient,inactive)
-(SELECT m.teiid::int, generate_uid(),now(),now(), false, 43498,73828,75,now(),now(),false
-FROM temp_data m) ON CONFLICT DO NOTHING;
+INSERT INTO trackedentityinstance (trackedentityinstanceid, uid, created,
+                                   lastupdated, deleted, organisationunitid,
+                                   trackedentitytypeid, lastupdatedby, createdatclient, lastupdatedatclient, inactive)
+    (SELECT m.teiid::int,
+            generate_uid(),
+            now(),
+            now(),
+            false,
+            43498,
+            73828,
+            75,
+            now(),
+            now(),
+            false
+     FROM temp_data m)
+ON CONFLICT DO NOTHING;
 
 -- Creating Enrollments
-INSERT INTO programinstance (programinstanceid, uid,created,lastupdated,deleted,enrollmentdate,trackedentityinstanceid,
-programid,organisationunitid,storedby, status, createdatclient, lastupdatedatclient, incidentdate)
-SELECT nextval('hibernate_sequence'),generate_uid(),now(),now(), false, now(), t.teiid::int, 73867, 43498,'akumbabarns','ACTIVE', now(), now(), now()
+INSERT INTO programinstance (programinstanceid, uid, created, lastupdated, deleted, enrollmentdate,
+                             trackedentityinstanceid,
+                             programid, organisationunitid, storedby, status, createdatclient, lastupdatedatclient,
+                             incidentdate)
+SELECT nextval('hibernate_sequence'),
+       generate_uid(),
+       now(),
+       now(),
+       false,
+       now(),
+       t.teiid::int,
+       73867,
+       43498,
+       'akumbabarns',
+       'ACTIVE',
+       now(),
+       now(),
+       now()
 FROM temp_data t;
 
 
 -- adding ownership
 INSERT INTO trackedentityprogramowner
-SELECT nextval('hibernate_sequence'),m.teiid::int, 73867,now(),now(), 43498,'akumbabarns'
+SELECT nextval('hibernate_sequence'), m.teiid::int, 73867, now(), now(), 43498, 'akumbabarns'
 FROM temp_data m;
 
 -- Finding the TEI Att ID
-select  * from trackedentityattribute;
+select *
+from trackedentityattribute;
 
 -- adding age
-INSERT INTO trackedentityattributevalue (trackedentityinstanceid,trackedentityattributeid,created,lastupdated,value,storedby)
-SELECT t.teiid::int, 73810, now(),now(),t.age,'akumbabarns'
+INSERT INTO trackedentityattributevalue (trackedentityinstanceid, trackedentityattributeid, created, lastupdated, value,
+                                         storedby)
+SELECT t.teiid::int, 73810, now(), now(), t.age, 'akumbabarns'
 FROM temp_data t;
 
 -- patient_name
-INSERT INTO trackedentityattributevalue (trackedentityinstanceid,trackedentityattributeid,created,lastupdated,value,storedby)
-SELECT t.teiid::int, 73818, now(),now(),t.patient_name,'akumbabarns'
+INSERT INTO trackedentityattributevalue (trackedentityinstanceid, trackedentityattributeid, created, lastupdated, value,
+                                         storedby)
+SELECT t.teiid::int, 73818, now(), now(), t.patient_name, 'akumbabarns'
 FROM temp_data t;
 
 -- Adding Events
+
+INSERT INTO public.programstageinstance (programstageinstanceid, uid, code, created, lastupdated, createdatclient,
+                                         lastupdatedatclient, lastsynchronized, programinstanceid, programstageid,
+                                         attributeoptioncomboid, deleted, storedby, duedate, executiondate,
+                                         organisationunitid, status, completedby, completeddate, geometry,
+                                         eventdatavalues, assigneduserid, createdbyuserinfo, lastupdatedbyuserinfo)
+SELECT nextval('hibernate_sequence'),
+       generate_uid(),
+       null,
+       now(),
+       now(),
+       null,
+       null,
+       now(),
+       pi.programinstanceid,
+       73847,
+       24,
+       false,
+       'akumbabarns',
+       now(),
+       now(),
+       43498,
+       'ACTIVE',
+       null,
+       null,
+       null,
+       concat('{
+     "CZPgB1WuEp0": {
+       "value": "', t.visit_1_diastolic, '",
+       "created": "', now(), '",
+       "lastUpdated": "', now(), '",
+       "createdByUserInfo": {
+          "id": 61385,
+          "uid": "LL20yR5Lozr",
+          "surname": "Akumba",
+          "username": "akumbabarns",
+          "firstName": "Barnabas"
+        },
+       "providedElsewhere": false,
+       "lastUpdatedByUserInfo": {
+          "id": 61385,
+          "uid": "LL20yR5Lozr",
+          "surname": "Akumba",
+          "username": "akumbabarns",
+          "firstName": "Barnabas"
+        }
+     },"J2YWUFBEyvZ": {
+       "value": "', t.visit_1_diastolic, '",
+       "created": "', now(), '",
+       "lastUpdated": "', now(), '",
+       "createdByUserInfo": {
+          "id": 61385,
+          "uid": "LL20yR5Lozr",
+          "surname": "Akumba",
+          "username": "akumbabarns",
+          "firstName": "Barnabas"
+        },
+       "providedElsewhere": false,
+       "lastUpdatedByUserInfo": {
+          "id": 61385,
+          "uid": "LL20yR5Lozr",
+          "surname": "Akumba",
+          "username": "akumbabarns",
+          "firstName": "Barnabas"
+        }
+     }}')::jsonb,
+       null,
+       '{
+          "id": 61385,
+          "uid": "LL20yR5Lozr",
+          "surname": "Akumba",
+          "username": "akumbabarns",
+          "firstName": "Barnabas"
+        }',
+       '{
+          "id": 61385,
+          "uid": "LL20yR5Lozr",
+          "surname": "Akumba",
+          "username": "akumbabarns",
+          "firstName": "Barnabas"
+        }'
+FROM temp_data t
+         JOIN programinstance pi on t.teiid = pi.trackedentityinstanceid;
+
+
 
