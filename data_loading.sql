@@ -223,7 +223,8 @@ SELECT nextval('hibernate_sequence'),
           "firstName": "Barnabas"
         }'
 FROM temp_data t
-         JOIN programinstance pi on t.teiid = pi.trackedentityinstanceid;
+         JOIN programinstance pi on t.teiid = pi.trackedentityinstanceid
+where t.visit_1_date <> '';
 
 
 
