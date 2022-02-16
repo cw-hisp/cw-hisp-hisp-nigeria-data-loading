@@ -241,6 +241,7 @@ SELECT COALESCE(
 )::jsonb
 $function$;
 
+-- Repeat this for every data element
 UPDATE programstageinstance pi
 SET eventdatavalues = json_object_delete_keys(eventdatavalues, 'CZPgB1WuEp0'::text)
 WHERE pi.eventdatavalues->'CZPgB1WuEp0'->>'value' = '';
