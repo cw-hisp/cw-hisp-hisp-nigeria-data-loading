@@ -226,5 +226,24 @@ FROM temp_data t
          JOIN programinstance pi on t.teiid = pi.trackedentityinstanceid
 where t.visit_1_date <> '';
 
+-- CLEANING UP EMPTY VALUES in eventdatavalues
+CREATE OR REPLACE FUNCTION "json_object_delete_keys"("json" jsonb, "keys_to_delete" TEXT)
+  RETURNS jsonb
+  LANGUAGE sql
+  IMMUTABLE
+  STRICT
+AS $function$
+SELECT COALESCE(
+  (SELECT ('{' || string_agg(to_json("key") || ':' || "value", ',') || '}')
+   FROM jsonb_each("json")
+   WHERE "key" <> "keys_to_delete"),
+  '{}'
+)::jsonb
+$function$;
+
+UPDATE programstageinstance pi
+SET eventdatavalues = json_object_delete_keys(eventdatavalues, 'CZPgB1WuEp0'::text)
+WHERE pi.eventdatavalues->'CZPgB1WuEp0'->>'value' = '';
+
 
 
